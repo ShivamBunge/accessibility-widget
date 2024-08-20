@@ -1,0 +1,40 @@
+.accessibility-widget {
+    position: fixed;
+    padding: 10px;
+    z-index: 1000;
+    /* Adjust based on the chosen position */
+    bottom: 20px;
+    right: 20px;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+}
+
+.widget-controls {
+    display: flex;
+    flex-direction: column;
+    margin-top: 10px;
+}
+
+button {
+    margin: 5px 0;
+    padding: 10px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+/* AccessibilityWidget.css */
+.high-contrast {
+    background-color: #000 !important;
+    color: #fff !important;
+    filter: invert(100%);
+}
+
+.high-contrast a {
+    color: #ffff00 !important;
+    /* Yellow links in high contrast mode */
+}
+
+.dyslexia-font {
+    font-family: 'OpenDyslexic', Arial, sans-serif !important;
+}
