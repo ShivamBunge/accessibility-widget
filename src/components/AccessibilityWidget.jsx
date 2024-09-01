@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import './AccessibilityWidget.css';
 
 const AccessibilityWidget = ({ position = "bottom-right", primaryColor = "#3498db" }) => {
+  const [elementsColors, setElementsColors] = useState([]);
   const [fontSize, setFontSize] = useState(16);
   const [highContrast, setHighContrast] = useState(false);
   const [letterSpacing, setLetterSpacing] = useState(0);
@@ -9,6 +10,36 @@ const AccessibilityWidget = ({ position = "bottom-right", primaryColor = "#3498d
   const [lineHeight, setLineHeight] = useState(1.2);
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [dyslexiaFont, setDyslexiaFont] = useState(false);
+
+  const updatedColors = [
+    { tagName: 'DIV', color: '#ff0000' }, // All <div> elements will be updated to red
+    { tagName: 'SPAN', color: '#00ff00' }, // All <span> elements will be updated to green
+  ];
+
+  useEffect(() => {
+    const getAllElementsRGB = () => {
+      const elements = document.body.getElementsByTagName('*');
+      const colors = [];
+
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+        const style = window.getComputedStyle(element);
+        const backgroundColor = style.backgroundColor;
+
+        if (backgroundColor && backgroundColor !== 'rgba(0, 0, 0, 0)') {
+          // Collecting element tag name and RGB color
+          colors.push({
+            tagName: element.tagName,
+            color: backgroundColor,
+          });
+        }
+      }
+
+      setElementsColors(colors);
+    };
+
+    getAllElementsRGB();
+  }, []);
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
@@ -71,6 +102,21 @@ const AccessibilityWidget = ({ position = "bottom-right", primaryColor = "#3498d
     setLineHeight((prevHeight) => (prevHeight > 1.2 ? prevHeight - 0.1 : 1.2));
     document.body.style.lineHeight = `${lineHeight - 0.1 >= 1.2 ? lineHeight - 0.1 : 1.2}`;
   };
+  const applyColorsToElements = () => {
+    const elements = document.body.getElementsByTagName('*');
+
+
+    updatedColors.forEach((colorItem) => {
+      for (let i = 0; i < elements.length; i++) {
+        const element = elements[i];
+
+        if (element.tagName === colorItem.tagName) {
+          element.style.backgroundColor = colorItem.color;
+        }
+      }
+    });
+  };
+
 
   return (
     <div className={`accessibility-widget ${position}`}>
@@ -93,6 +139,7 @@ const AccessibilityWidget = ({ position = "bottom-right", primaryColor = "#3498d
           <button onClick={decreaseWordSpacing} style={{ backgroundColor: primaryColor }}>Decrease Word Spacing</button>
           <button onClick={increaseLineHeight} style={{ backgroundColor: primaryColor }}>Increase Line Height</button>
           <button onClick={decreaseLineHeight} style={{ backgroundColor: primaryColor }}>Decrease Line Height</button>
+          <button onClick={applyColorsToElements}>Send Colors to Backend</button>
         </div>
       )}
     </div>
